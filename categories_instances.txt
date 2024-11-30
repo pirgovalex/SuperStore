@@ -1,0 +1,66 @@
+
+<clothes>
+_trousers
+*Jack and Jones jeans,100.99,images/jackAndJonesJeans.jpg
+*Christian Dior pants,50.00,images/diorPants.jpg
+_T-shirts
+*Jack and Jones,9.99,images/jackAndJones.jpg
+*Christian Dior,25.00,images/dior.jpg
+_jackets
+*Burberry jacket,500.00,images/burberryJacket.jpg
+*Christian Dior jacket,800.00,images/diorJacket.jpg
+</clothes>
+<electronics>
+_notebooks
+*Acer Aspire 5750G,1000.99,images/acer5750G.jpg
+*Lenovo V13015IGM,1500.99,images/lenovo.jpg
+*Acer Aspire 3 A31553G35VX,2000.00,images/acer3.jpg
+_smartphones
+*Samsung Galaxy S9,1600.99,images/samsung.jpg
+*LG G5,1200.99,images/lg.jpg
+*Xiaomi Redmi Note 5 Pro,400.00,images/xiaomi.jpg
+</electronics>
+<books>
+_fiction
+*The Great Gatsby,10.99,images/gatsby.jpg
+*To Kill a Mockingbird,8.50,images/mockingbird.jpg
+_non-fiction
+*Sapiens,15.99,images/sapiens.jpg
+*Educated,12.99,images/educated.jpg
+_science
+*A Brief History of Time,14.50,images/time.jpg
+*Cosmos,16.99,images/cosmos.jpg
+</books>
+<home_appliances>
+_refrigerators
+*LG Double Door,1200.00,images/lg_fridge.jpg
+*Samsung CoolTech,1000.00,images/samsung_fridge.jpg
+_washing_machines
+*Whirlpool Top Load,800.99,images/whirlpool.jpg
+*Bosch Front Load,900.00,images/bosch.jpg
+_vacuums
+*Dyson V15,600.00,images/dyson.jpg
+*Shark Navigator,400.00,images/shark.jpg
+</home_appliances>
+<toys>
+_action_figures
+*Superman,19.99,images/superman.jpg
+*Batman,18.99,images/batman.jpg
+_puzzles
+*Rubik's Cube,9.99,images/rubiks.jpg
+*3D Puzzle Eiffel Tower,25.99,images/eiffel.jpg
+_dolls
+*Barbie Dreamhouse,45.99,images/barbie.jpg
+*Baby Alive,39.99,images/baby_alive.jpg
+</toys>
+<sports>
+_equipment
+*Wilson Basketball,29.99,images/basketball.jpg
+*Nike Football,34.99,images/football.jpg
+_apparel
+*Adidas Tracksuit,99.99,images/adidas.jpg
+*Puma Jersey,49.99,images/puma.jpg
+_shoes
+*Nike Air Zoom,150.99,images/nike_shoes.jpg
+*Reebok Running,120.99,images/reebok.jpg
+</sports>
