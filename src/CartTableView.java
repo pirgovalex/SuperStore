@@ -110,37 +110,63 @@ public class CartTableView extends JFrame {
     }
 
     private void showPaymentDialog() {
-        JPanel panel = new JPanel(new GridLayout(4, 2, 5, 5));
+        // Tabbed pane to switch between payment methods
+        JTabbedPane tabbedPane = new JTabbedPane();
 
-        // Input fields for card number, expiration date, and CVC
+        // Panel for Card Payment
+        JPanel cardPaymentPanel = new JPanel(new GridLayout(4, 2, 5, 5));
         JTextField cardNumberField = new JTextField();
         JTextField expirationDateField = new JTextField();
         JTextField cvcField = new JTextField();
 
-        panel.add(new JLabel("Card Number:"));
-        panel.add(cardNumberField);
-        panel.add(new JLabel("Expiration Date (MM/YY):"));
-        panel.add(expirationDateField);
-        panel.add(new JLabel("CVC:"));
-        panel.add(cvcField);
+        cardPaymentPanel.add(new JLabel("Card Number:"));
+        cardPaymentPanel.add(cardNumberField);
+        cardPaymentPanel.add(new JLabel("Expiration Date (MM/YY):"));
+        cardPaymentPanel.add(expirationDateField);
+        cardPaymentPanel.add(new JLabel("CVC:"));
+        cardPaymentPanel.add(cvcField);
 
-        int option = JOptionPane.showConfirmDialog(this, panel, "Enter Payment Information", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        tabbedPane.addTab("Pay with Card", cardPaymentPanel);
+
+        // Panel for PayPal Payment
+        JPanel paypalPanel = new JPanel(new GridLayout(2, 2, 5, 5));
+        JTextField paypalEmailField = new JTextField();
+
+        paypalPanel.add(new JLabel("PayPal Email:"));
+        paypalPanel.add(paypalEmailField);
+
+        tabbedPane.addTab("Pay with PayPal", paypalPanel);
+
+        // Show dialog with both tabs
+        int option = JOptionPane.showConfirmDialog(this, tabbedPane, "Select Payment Method", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
         if (option == JOptionPane.OK_OPTION) {
-            String cardNumber = cardNumberField.getText().trim();
-            String expirationDate = expirationDateField.getText().trim();
-            String cvc = cvcField.getText().trim();
-           /* PaymentValidator.checkCard(cardNumber);
-            PaymentValidator.checkCVC(cvc,this);
-            PaymentValidator.checkDate(expirationDate,this);*/
-            // Call the PaymentValidator methods
-            if (PaymentValidator.checkCard(cardNumber) && PaymentValidator.checkCVC(cvc,this)&& PaymentValidator.checkDate(expirationDate,this)) {
-                JOptionPane.showMessageDialog(this, "Payment Successful.");
-            } else {
-                JOptionPane.showMessageDialog(this, "Invalid payment information.", "Error", JOptionPane.ERROR_MESSAGE);
+            // Handle Card Payment
+            if (tabbedPane.getSelectedIndex() == 0) { // Card Payment Tab
+                String cardNumber = cardNumberField.getText().trim();
+                String expirationDate = expirationDateField.getText().trim();
+                String cvc = cvcField.getText().trim();
+
+                if (PaymentValidator.checkCard(cardNumber) && PaymentValidator.checkCVC(cvc, this) && PaymentValidator.checkDate(expirationDate, this)) {
+                    JOptionPane.showMessageDialog(this, "Payment Successful.");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Invalid payment information.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+
+            // Handle PayPal Payment
+            if (tabbedPane.getSelectedIndex() == 1) { // PayPal Tab
+                String paypalEmail = paypalEmailField.getText().trim();
+
+                if (PayPalValidator.isValidPayPalEmail(paypalEmail)) {
+                    JOptionPane.showMessageDialog(this, "Payment Successful via PayPal!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Invalid PayPal email.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
     }
+
 
     // Comparator classes
     static class NameComparator implements Comparator<Product> {
