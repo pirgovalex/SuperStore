@@ -4,11 +4,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
-  class InputFileData {
-    private Map<String, List<String>> subclassMap = new HashMap<>();
+  sealed class InputFileData permits PublicFileManager {
+    final Map<String, List<String>> subclassMap = new HashMap<>();
     private  String currentSubClass = null;
 
-    protected void dataHandler() throws IOException {
+     void dataHandler() throws IOException {
         Path pathToFile =  Path.of("categories_instances.txt");
         System.out.println(pathToFile);
         List<String> lines = Files.readAllLines(pathToFile);
@@ -32,10 +32,10 @@ import java.util.stream.Collectors;
             }
         }
 
-        subclassMap.forEach((subclass,instances)-> {
+       /* subclassMap.forEach((subclass,instances)-> {
             System.out.println("Subclass: " + subclass);
             System.out.println("Instances: " + instances);
-        });
+        });*/
 
     }
 
