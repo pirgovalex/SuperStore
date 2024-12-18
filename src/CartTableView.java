@@ -20,6 +20,7 @@ class NonEditableTableModel extends DefaultTableModel {
 }
 
 public class CartTableView extends JFrame {
+
     private ArrayList<Product> cart;
     private JTable table;
     private NonEditableTableModel tableModel;
