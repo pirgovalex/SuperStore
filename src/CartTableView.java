@@ -5,7 +5,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-
+import java.util.List;
 import Products.Product;
 
 class NonEditableTableModel extends DefaultTableModel {
@@ -25,6 +25,8 @@ public class CartTableView extends JFrame {
     private JTable table;
     private NonEditableTableModel tableModel;
     private JButton payButton, sortByNameButton, sortByPriceButton;
+
+    private JButton plusButton, minusButton;
 
     public CartTableView(ArrayList<Product> cart) {
         this.cart = cart;
@@ -57,14 +59,23 @@ public class CartTableView extends JFrame {
             JOptionPane.showMessageDialog(this, "Sorted by Price.");
         });
 
-        // Pay Button with Pop-up Menu
+        // New Plus and Minus Buttons
+        plusButton = new JButton("Add (+)");
+        plusButton.addActionListener(e -> adjustQuantity(1));
+
+        minusButton = new JButton("Remove (-)");
+        minusButton.addActionListener(e -> adjustQuantity(-1));
+
+        // Pay Button
         payButton = new JButton("Pay with Card");
         payButton.addActionListener(e -> showPaymentDialog());
 
         // Button Panel (South)
-        JPanel buttonPanel = new JPanel(new GridLayout(3, 1, 5, 5));
+        JPanel buttonPanel = new JPanel(new GridLayout(5, 1, 5, 5));
         buttonPanel.add(sortByNameButton);
         buttonPanel.add(sortByPriceButton);
+        buttonPanel.add(plusButton);
+        buttonPanel.add(minusButton);
         buttonPanel.add(payButton);
 
         // Add Components
@@ -74,41 +85,94 @@ public class CartTableView extends JFrame {
         setVisible(true);
     }
 
+
     private void sortByName() {
-        cart.sort(new NameComparator());
-        refreshTable(cart);
+        TableRowSorter<NonEditableTableModel> sorter = (TableRowSorter<NonEditableTableModel>) table.getRowSorter();
+        sorter.setComparator(0, String.CASE_INSENSITIVE_ORDER);
+        sorter.setSortKeys(List.of(new RowSorter.SortKey(0, SortOrder.ASCENDING))); // Column 0 (Name)
     }
 
     private void sortByPrice() {
-        cart.sort(new PriceComparator());
-        refreshTable(cart);
+        TableRowSorter<NonEditableTableModel> sorter = (TableRowSorter<NonEditableTableModel>) table.getRowSorter();
+        sorter.setComparator(1, Comparator.comparingDouble(price -> Double.parseDouble(price.toString().replace("$", "").replace(",", ""))));
+        sorter.setSortKeys(List.of(new RowSorter.SortKey(1, SortOrder.ASCENDING))); // Column 1 (Price)
     }
 
     private void refreshTable(ArrayList<Product> cart) {
-        // Map to track product count
+        // Clear and add rows without sorting logic
+        tableModel.setRowCount(0);
         HashMap<String, Integer> productCounts = new HashMap<>();
         HashMap<String, Double> productPrices = new HashMap<>();
 
-        // Calculate counts and prices
+        // Count products and group
         for (Product product : cart) {
             productCounts.put(product.getName(), productCounts.getOrDefault(product.getName(), 0) + 1);
             productPrices.put(product.getName(), product.getPrice());
         }
 
-        // Clear
-        tableModel.setRowCount(0);
-
-        // Add grouped rows
+        // Populate
         for (String productName : productCounts.keySet()) {
             int count = productCounts.get(productName);
             double price = productPrices.get(productName);
             tableModel.addRow(new Object[]{productName + " (x" + count + ")", "$" + (price * count)});
         }
 
-        // Calculate and add the total sum
+        // Add total row
         double totalSum = cart.stream().mapToDouble(Product::getPrice).sum();
         tableModel.addRow(new Object[]{"Current total:", "$" + totalSum});
     }
+    private void adjustQuantity(int delta) {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a product to modify.", "No Selection", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String productNameWithCount = table.getValueAt(selectedRow, 0).toString();
+        String productName = productNameWithCount.split(" \\(x")[0]; // Extract the name before " (xCount)"
+
+        // Find the product in the cart
+        Product targetProduct = null;
+        for (Product product : cart) {
+            if (product.getName().equals(productName)) {
+                targetProduct = product;
+                break;
+            }
+        }
+
+        if (targetProduct != null) {
+            int currentCount = countInstances(targetProduct);
+
+            // Prevent removing the last instance
+            if (delta == -1 && currentCount == 1) {
+                JOptionPane.showMessageDialog(this, "Cannot remove the last instance of the product.", "Error", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+
+            if (delta == 1) {
+                cart.add(targetProduct); // Add
+            } else if (delta == -1) {
+                cart.remove(targetProduct); // Remove
+            }
+
+            // Refresh table
+            refreshTable(cart);
+        } else {
+            JOptionPane.showMessageDialog(this, "Selected product not found in the cart.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private int countInstances(Product product) {
+        int count = 0;
+        for (Product p : cart) {
+            if (p.getName().equals(product.getName())) {
+                count++;
+            }
+        }
+        return count;
+    }
+
 
     private void showPaymentDialog() {
         // Tabbed pane to switch between payment methods
