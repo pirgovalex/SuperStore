@@ -1,6 +1,6 @@
 package Products;
 
-// Sports Class zashto go napisah tova??
+// Sports Class
 public class Sports extends Product {
     public Sports(String name, double price, String imagePath) {
         super(name, price, imagePath);
